@@ -88,7 +88,7 @@ kotlin {
 **For Android-only:**
 ```kotlin
 dependencies {
-    implementation("eu.anifantakis:reanimator:1.0.0")
+    implementation("eu.anifantakis:reanimator-android:1.0.0")
     // Ensure you also have kotlinx.serialization runtime
 }
 ```
