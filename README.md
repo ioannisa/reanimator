@@ -3,6 +3,8 @@
 [![Maven Central](https://img.shields.io/maven-central/v/eu.anifantakis/reanimator.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/eu.anifantakis/reanimator)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
+[![Demo App Using Reanimator Library(https://github.com/ioannisa/ReanimatorUIDemo)
+
 **Effortless StateFlow persistence for Android and Kotlin Multiplatform ViewModels using SavedStateHandle.**
 
 <img width="971" alt="image" src="https://github.com/user-attachments/assets/525ff7d2-9f67-43e9-8450-b7e5fc4ecf61" />
@@ -80,8 +82,13 @@ Add the Reanimator dependency to your `build.gradle.kts` (or `build.gradle`) fil
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            // Navigation Library enables SavedStateHandle inside commonMain
+            implementation(libs.jetbrains.compose.navigation)
+
+            // Serialization library to handle complex data types for SavedStateHandle
+            implementation(libs.kotlinx.serialization.json)
+
             implementation("eu.anifantakis:reanimator:1.0.0")
-            // Ensure you also have kotlinx.serialization and a KMP ViewModel lib
         }
     }
 }
@@ -90,8 +97,13 @@ kotlin {
 **For Android-only:**
 ```kotlin
 dependencies {
+    // Navigation
+    implementation(libs.androidx.navigation.compose)
+
+    // Serialization library to handle complex data types for SavedStateHandle
+    implementation(libs.kotlinx.serialization.json)
+
     implementation("eu.anifantakis:reanimator-android:1.0.0")
-    // Ensure you also have kotlinx.serialization runtime
 }
 ```
 
