@@ -3,7 +3,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/eu.anifantakis/reanimator.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/eu.anifantakis/reanimator)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-[![Demo App Using Reanimator Library(https://github.com/ioannisa/ReanimatorUIDemo)
+[![Demo App Using Reanimator Library](https://github.com/ioannisa/ReanimatorUIDemo)
 
 **Effortless StateFlow persistence for Android and Kotlin Multiplatform ViewModels using SavedStateHandle.**
 
