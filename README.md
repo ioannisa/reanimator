@@ -5,6 +5,8 @@
 
 **Effortless StateFlow persistence for Android and Kotlin Multiplatform ViewModels using SavedStateHandle.**
 
+<img width="971" alt="image" src="https://github.com/user-attachments/assets/525ff7d2-9f67-43e9-8450-b7e5fc4ecf61" />
+
 Reanimator simplifies managing ViewModel state persistence across process death (Android) or configuration changes by seamlessly integrating Kotlin's `StateFlow` with `SavedStateHandle`. It offers automatic state saving/restoring with selective persistence for transient properties, significantly reducing boilerplate code.
 
 ## Features ✨
