@@ -52,8 +52,9 @@ inline fun <reified T : Any> SavedStateHandle.getMutableStateFlow(
     // Default Json instance now ignores unknown keys for better robustness
     json: Json = Json { ignoreUnknownKeys = true }
 ): PropertyDelegateProvider<Any, ReadOnlyProperty<Any, MutableStateFlow<T>>> {
-    return PropertyDelegateProvider { _, property ->
-        val actualKey = key ?: property.name
+    return PropertyDelegateProvider { thisRef, property ->
+        val viewModelClassName = thisRef.let { it::class.simpleName } ?: "UnknownViewModel"
+        val actualKey = key ?: "${viewModelClassName}_${property.name}"
 
         // Create a serializable MutableStateFlow with selective persistence
         val stateFlow = createSerializableStateFlow(

@@ -7,10 +7,11 @@ plugins {
     alias(libs.plugins.vanniktech.mavenPublish)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlin.serialization)
+    //id("maven-publish")
 }
 
 group = "eu.anifantakis"
-version = "1.0.0"
+version = "1.0.2"
 
 kotlin {
     androidTarget {
@@ -61,6 +62,18 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
+
+//publishing {
+//    publications {
+//        val kotlinMultiplatformPublication = publications.getByName("kotlinMultiplatform") as MavenPublication
+//        kotlinMultiplatformPublication.groupId = group.toString()
+//        kotlinMultiplatformPublication.artifactId = "reanimator"
+//        kotlinMultiplatformPublication.version = version.toString()
+//    }
+//    repositories {
+//        mavenLocal()
+//    }
+//}
 
 mavenPublishing {
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
