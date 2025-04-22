@@ -88,7 +88,7 @@ kotlin {
             // Serialization library to handle complex data types for SavedStateHandle
             implementation(libs.kotlinx.serialization.json)
 
-            implementation("eu.anifantakis:reanimator:1.0.0")
+            implementation("eu.anifantakis:reanimator:1.0.2")
         }
     }
 }
@@ -103,7 +103,7 @@ dependencies {
     // Serialization library to handle complex data types for SavedStateHandle
     implementation(libs.kotlinx.serialization.json)
 
-    implementation("eu.anifantakis:reanimator-android:1.0.0")
+    implementation("eu.anifantakis:reanimator-android:1.0.2")
 }
 ```
 
