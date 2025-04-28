@@ -53,15 +53,15 @@ inline fun <reified T : Any> SavedStateHandle.getMutableStateFlow(
     return PropertyDelegateProvider { owner, property ->
 
         // build a stable key for SavedStateHandle,
-        // we use viewmodel name and the property name as key
-        // if a key not supplied
-        val realKey = key ?: "${owner::class.simpleName}_${property.name}"
+        val viewModelClassName = owner.let { it::class.simpleName } ?: "UnknownViewModel"
+        val actualKey = key ?: "${viewModelClassName}_${property.name}"
+
         val serializer = serializer<T>()
         val json = Json { ignoreUnknownKeys = true }
         val hasTransient = transientProperties.isNotEmpty()
 
         // ---------- initial value ----------
-        val initial: T = get<String>(realKey)?.let { stored ->
+        val initial: T = get<String>(actualKey)?.let { stored ->
             if (!hasTransient) {
                 // no transients in list, just decode the json
                 runCatching { json.decodeFromString(serializer, stored) }
@@ -85,18 +85,18 @@ inline fun <reified T : Any> SavedStateHandle.getMutableStateFlow(
 
         MutableStateFlow(initial).also { flow ->
             flow.onEach { value ->
-                val jsonString = if (!hasTransient) {
-                    // nothing to hide – encode straight to string
+                val jsonString = if (transientProperties.isEmpty()) {
+                    // // if no transient – encode straight to string
                     json.encodeToString(serializer, value)
                 } else {
-                    // drop transient keys before saving
+                    // if transient - drop transient keys before saving
                     val element = json.encodeToJsonElement(serializer, value)
                     val cleaned  = (element as? JsonObject)
                         ?.let { JsonObject(it.filterKeys { k -> k !in transientProperties }) }
-                        ?: element                        // not an object → can't filter
+                        ?: element // can't filter
                     json.encodeToString(JsonElement.serializer(), cleaned)
                 }
-                set(realKey, jsonString)
+                set(actualKey, jsonString)
             }.launchIn(coroutineScope)
         }.let { ReadOnlyProperty { _, _ -> it } }
     }
