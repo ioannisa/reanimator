@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonObject
@@ -58,11 +57,10 @@ inline fun <reified T : Any> SavedStateHandle.getMutableStateFlow(
 
         val serializer = serializer<T>()
         val json = Json { ignoreUnknownKeys = true }
-        val hasTransient = transientProperties.isNotEmpty()
 
         // ---------- initial value ----------
         val initial: T = get<String>(actualKey)?.let { stored ->
-            if (!hasTransient) {
+            if (transientProperties.isEmpty()) {
                 // no transients in list, just decode the json
                 runCatching { json.decodeFromString(serializer, stored) }
                     .getOrElse { defaultValue }
@@ -83,20 +81,19 @@ inline fun <reified T : Any> SavedStateHandle.getMutableStateFlow(
             }
         } ?: defaultValue
 
+        // ---------- Persist each StateFlow emission into SavedStateHandle ----------
         MutableStateFlow(initial).also { flow ->
             flow.onEach { value ->
-                val jsonString = if (transientProperties.isEmpty()) {
-                    // // if no transient – encode straight to string
-                    json.encodeToString(serializer, value)
-                } else {
-                    // if transient - drop transient keys before saving
-                    val element = json.encodeToJsonElement(serializer, value)
-                    val cleaned  = (element as? JsonObject)
-                        ?.let { JsonObject(it.filterKeys { k -> k !in transientProperties }) }
-                        ?: element // can't filter
-                    json.encodeToString(JsonElement.serializer(), cleaned)
-                }
-                set(actualKey, jsonString)
+                // initially encode all properties
+                val element = json.encodeToJsonElement(serializer, value)
+                //  then remove transient ones if "transientProperties" is not empty
+                val cleanedObj = (element as? JsonObject)
+                    ?.takeIf { transientProperties.isNotEmpty() }
+                    ?.let { JsonObject(it.filterKeys { k -> k !in transientProperties }) }
+                    ?: element
+
+                // return the encoded value as SavedStateHandle key/value
+                set(actualKey, cleanedObj.toString())
             }.launchIn(coroutineScope)
         }.let { ReadOnlyProperty { _, _ -> it } }
     }
